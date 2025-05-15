@@ -85,10 +85,17 @@ impl BundleAccount {
 }
 
 #[derive(Accounts)]
+#[instruction(company_name: String)]
 pub struct CreateBundle<'info> {
     #[account(mut)]
     pub lending_company: Signer<'info>,
-    #[account(init, payer = lending_company, space = 8 + BundleAccount::INIT_SPACE)]
+    #[account(
+        init, 
+        seeds = [company_name.as_ref()],
+        bump,
+        payer = lending_company, 
+        space = 8 + BundleAccount::INIT_SPACE
+    )]
     pub bundle_account: Account<'info, BundleAccount>,
     pub system_program: Program<'info, System>,
 }

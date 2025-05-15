@@ -8,60 +8,86 @@
   },
   "instructions": [
     {
-      "name": "create_bundle_token",
+      "name": "create_bundle",
       "discriminator": [
-        165,
-        104,
-        112,
-        155,
-        33,
-        153,
-        241,
-        191
+        108,
+        43,
+        176,
+        128,
+        45,
+        94,
+        197,
+        95
       ],
       "accounts": [
         {
-          "name": "signer",
+          "name": "lending_company",
           "writable": true,
           "signer": true
         },
         {
-          "name": "bundle_account"
+          "name": "bundle_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "company_name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "loan_amount",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "total_amount",
           "type": "u64"
         },
         {
-          "name": "tranche_ratios",
-          "type": "u8"
+          "name": "junior_ratio",
+          "type": "u16"
         },
         {
-          "name": "interest_rate",
-          "type": "u8"
+          "name": "senior_ratio",
+          "type": "u16"
         },
         {
-          "name": "lock_up_period",
-          "type": "u32"
+          "name": "junior_rate",
+          "type": "u16"
+        },
+        {
+          "name": "senior_rate",
+          "type": "u16"
+        },
+        {
+          "name": "start_time",
+          "type": "i64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        },
+        {
+          "name": "redemption_time",
+          "type": "i64"
+        },
+        {
+          "name": "junior_period",
+          "type": "i64"
+        },
+        {
+          "name": "min_funding_threshold",
+          "type": "u64"
         }
       ]
-    },
-    {
-      "name": "initialize",
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
-      "accounts": [],
-      "args": []
     }
   ],
   "accounts": [
@@ -79,6 +105,38 @@
       ]
     }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidRatio",
+      "msg": "Junior and Senior ratios must sum to 100% (10000 basis points)"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidStartTime",
+      "msg": "Start time must be in the future"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidEndTime",
+      "msg": "End time must be after start time"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidRedemptionTime",
+      "msg": "Redemption time must be after end time"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidJuniorPeriod",
+      "msg": "Junior period must be positive"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidThreshold",
+      "msg": "Invalid funding threshold"
+    }
+  ],
   "types": [
     {
       "name": "BundleAccount",
@@ -86,20 +144,102 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "loan_amount",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "BundleStatus"
+              }
+            }
+          },
+          {
+            "name": "lending_company",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_amount",
             "type": "u64"
           },
           {
-            "name": "tranche_ratios",
-            "type": "u8"
+            "name": "raised_amount",
+            "type": "u64"
           },
           {
-            "name": "interest_rate",
-            "type": "u8"
+            "name": "junior_ratio",
+            "type": "u16"
           },
           {
-            "name": "lock_up_period",
-            "type": "u32"
+            "name": "senior_ratio",
+            "type": "u16"
+          },
+          {
+            "name": "junior_rate",
+            "type": "u16"
+          },
+          {
+            "name": "senior_rate",
+            "type": "u16"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "redemption_time",
+            "type": "i64"
+          },
+          {
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "junior_period",
+            "type": "i64"
+          },
+          {
+            "name": "min_funding_threshold",
+            "type": "u64"
+          },
+          {
+            "name": "last_status_update_time",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BundleStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Upcoming"
+          },
+          {
+            "name": "Raising"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "FinalRedemption"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Failed"
           }
         ]
       }
