@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/pencil_finance.json`.
  */
 export type PencilFinance = {
-  "address": "JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H",
+  "address": "6yovnUkuEdNBGgxqDzUgQLkGg75h2zDQsNwG6Zipp5ML",
   "metadata": {
     "name": "pencilFinance",
     "version": "0.1.0",
@@ -39,6 +39,10 @@ export type PencilFinance = {
               {
                 "kind": "arg",
                 "path": "companyName"
+              },
+              {
+                "kind": "arg",
+                "path": "bundleIndex"
               }
             ]
           }
@@ -52,6 +56,10 @@ export type PencilFinance = {
         {
           "name": "name",
           "type": "string"
+        },
+        {
+          "name": "bundleIndex",
+          "type": "i64"
         },
         {
           "name": "totalAmount",

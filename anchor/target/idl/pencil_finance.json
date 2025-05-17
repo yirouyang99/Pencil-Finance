@@ -1,5 +1,5 @@
 {
-  "address": "JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H",
+  "address": "6yovnUkuEdNBGgxqDzUgQLkGg75h2zDQsNwG6Zipp5ML",
   "metadata": {
     "name": "pencil_finance",
     "version": "0.1.0",
@@ -33,6 +33,10 @@
               {
                 "kind": "arg",
                 "path": "company_name"
+              },
+              {
+                "kind": "arg",
+                "path": "bundle_index"
               }
             ]
           }
@@ -46,6 +50,10 @@
         {
           "name": "name",
           "type": "string"
+        },
+        {
+          "name": "_bundle_index",
+          "type": "i64"
         },
         {
           "name": "total_amount",

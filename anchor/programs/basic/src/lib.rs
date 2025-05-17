@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("JAVuBXeBZqXNtS73azhBDAoYaaAFfo4gWXoZe2e7Jf8H");
+declare_id!("6yovnUkuEdNBGgxqDzUgQLkGg75h2zDQsNwG6Zipp5ML");
 
 #[program]
 pub mod pencil_finance {
@@ -9,6 +9,7 @@ pub mod pencil_finance {
     pub fn create_bundle(
         ctx: Context<CreateBundle>,
         name: String,
+        _bundle_index: i64,
         total_amount: u64,
         junior_ratio: u16,
         senior_ratio: u16,
@@ -85,13 +86,13 @@ impl BundleAccount {
 }
 
 #[derive(Accounts)]
-#[instruction(company_name: String)]
+#[instruction(company_name: String, bundle_index: i64)]
 pub struct CreateBundle<'info> {
     #[account(mut)]
     pub lending_company: Signer<'info>,
     #[account(
         init, 
-        seeds = [company_name.as_ref()],
+        seeds = [company_name.as_bytes(), &bundle_index.to_le_bytes()],
         bump,
         payer = lending_company, 
         space = 8 + BundleAccount::INIT_SPACE
